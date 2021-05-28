@@ -9,7 +9,6 @@ class Header extends React.Component {
     this.state = {
       currentPage:"book"
     }
-    console.log("props",this.props.props)
   }
 
   handleClick = (item) => {

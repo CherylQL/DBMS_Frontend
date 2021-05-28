@@ -1,7 +1,7 @@
 import React from 'react';
-import { Table, Input, Button, Space, Modal, Form, message } from 'antd';
+import { Table, Input, Button, Space, Modal, Form, message,  Upload } from 'antd';
 import Highlighter from 'react-highlight-words';
-import { SearchOutlined } from '@ant-design/icons';
+import { SearchOutlined, UploadOutlined } from '@ant-design/icons';
 import 'antd/dist/antd.css';
 import './home.css';
 import Login from './login.jsx';
@@ -18,7 +18,6 @@ class Home extends React.Component{
       modal_data: [],
       add_update: null //both use the same modal, while `add_update`=false means add, else it means update
     }
-    console.log("ppp",this.props)
     fetch("http://localhost:7001/find",{method:"post"}).then(res => {
       return res.json();
     }).then(res => {
@@ -27,7 +26,7 @@ class Home extends React.Component{
   }
   onDelete = (b_id, that) => {
     const token = localStorage.getItem('token');
-    if(token === null) 
+    if(token === null)
       return message.error("宁不是管理员噢~")
     let url = "http://localhost:7001/sql/deleteBook"
     fetch(url, {
@@ -92,15 +91,15 @@ class Home extends React.Component{
   Opt = (b_id)=>(
     <div>
       <Space size = "middle">
-        <Button 
-          type="link" 
+        <Button
+          type="link"
           onClick = {()=>this.onDelete(b_id, this)}
         >
           delete
         </Button>
       </Space>
       <Space marginleft = "10px">
-        <Button 
+        <Button
           type="link"
           onClick = {()=>
             this.setState({
@@ -240,9 +239,28 @@ class Home extends React.Component{
   handleMenuChange = (e)=>{
     this.setState({ currentPage : e.key })
   }
-  
+
   formRef = React.createRef();
   render(){
+    const token = localStorage.getItem('token');
+    const uploadBooks = {
+      action:"http://localhost:7001/sql/addbooklist",
+      headers:{
+        'Authorization': `Bearer ${token}`,
+      },
+      method: "POST",
+      mode:'cors',
+      onChange({ file, fileList }) {
+        if (file.status !== 'uploading')
+          console.log("file", file, "filelist", fileList)
+        if (file.status === 'done') {
+          message.success(`${file.name} file uploaded successfully`);
+        } else if (file.status === 'error') {
+          message.error(`${file.name} file upload failed.`);
+        }
+      },
+      defaultFileList: []
+    };
     const db_structure = [
       {
         title:'图书编号 BookNo',
@@ -327,8 +345,11 @@ class Home extends React.Component{
         <Table style = {{padding : '1%'}} columns = {db_structure} dataSource={this.state.db_data}/>
         <div  className="Add_Button">
           <Button type="primary" onClick={() => this.setState({show_add_modal:true, add_update: null})}>Add New Item</Button>
+          <Upload {...uploadBooks}>
+            <Button icon={<UploadOutlined />}>Upload</Button>
+          </Upload>
         </div>
-        <Modal title="加入一个新数据吧~" visible={this.state.show_add_modal} destroyOnClose={true} maskStyle  onOk={this.handleOK} onCancel={this.handleAddCancel}>
+        <Modal title={this.state.add_update===null?"加入一个新数据吧~":"更改编号为"+this.state.add_update+"的数据吧~"} visible={this.state.show_add_modal} destroyOnClose={true} maskStyle  onOk={this.handleOK} onCancel={this.handleAddCancel}>
           <Form
             name="recordEditor"
             ref={this.formRef}
@@ -366,7 +387,7 @@ class Home extends React.Component{
               <Input />
             </Form.Item>
             <Form.Item
-              label = "出版时间"
+              label = "出版时间(年)"
               name = "Year"
               key = "Year"
               rule = {[{required: true, message: "Please input student's name"}]}

@@ -10,9 +10,8 @@ class Login extends React.Component {
       loginData: [],
       token: localStorage.getItem('token'),
     }
-    console.log(localStorage.getItem('token'))
   }
-  
+
   loginRef = React.createRef();
   handleLogin = ()=>{
     this.setState({
@@ -32,7 +31,6 @@ class Login extends React.Component {
       }).then(res=>{
         return res.json();
       }).then(res=>{
-        console.log(res)
         this.setState({token: res.res.token},()=>{
           localStorage.setItem('token', res.res.token);
         })
