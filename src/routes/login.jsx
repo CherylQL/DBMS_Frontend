@@ -1,5 +1,5 @@
 import React from 'react';
-import { Input, Modal, Form } from 'antd';
+import { Input, Modal, Form, message } from 'antd';
 import 'antd/dist/antd.css';
 
 class Login extends React.Component {
@@ -31,9 +31,17 @@ class Login extends React.Component {
       }).then(res=>{
         return res.json();
       }).then(res=>{
-        this.setState({token: res.res.token},()=>{
-          localStorage.setItem('token', res.res.token);
-        })
+        if(res.res.status === 200) {
+          message.success("欢迎登录！管理员！")
+          this.setState({token: res.res.token},()=>{
+            localStorage.setItem('token', res.res.token);
+          })
+        }else if(res.res.status === 300) {
+          message.error("找不到这一号人~")
+        }else if (res.res.status === 301) {
+          message.success("欢迎回来！"+res.res.name )
+        }
+
       })
     })
   }

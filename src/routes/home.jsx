@@ -242,6 +242,7 @@ class Home extends React.Component{
 
   formRef = React.createRef();
   render(){
+    const that = this
     const token = localStorage.getItem('token');
     const uploadBooks = {
       action:"http://localhost:7001/sql/addbooklist",
@@ -255,6 +256,9 @@ class Home extends React.Component{
           console.log("file", file, "filelist", fileList)
         if (file.status === 'done') {
           message.success(`${file.name} file uploaded successfully`);
+          that.setState({db_data:file.response.result.map(i=>{return {...i,opt:that.Opt(i.BookNo),key:i.BookNo}})},()=>{
+            that.forceUpdate()
+          })
         } else if (file.status === 'error') {
           message.error(`${file.name} file upload failed.`);
         }

@@ -1,7 +1,7 @@
 import React from 'react';
 import 'antd/dist/antd.css';
-import { PageHeader,  Menu, message } from 'antd';
-import { MailOutlined } from '@ant-design/icons';
+import { PageHeader,  Menu, message, Button } from 'antd';
+import { HomeOutlined, BarsOutlined, DeleteRowOutlined } from '@ant-design/icons';
 import { BrowserRouter as   Router } from 'react-router-dom';
 class Header extends React.Component {
   constructor(props) {
@@ -16,7 +16,10 @@ class Header extends React.Component {
       currentPage:item.key
     },()=>{
       const token = localStorage.getItem('token');
-      if(token === null){
+      if(item.key === "del_token"){
+        message.success('token has been removed')
+      }
+      else if(token === null){
         message.error("没有权限~")
       }else{
         if(item.key === "book")
@@ -31,13 +34,18 @@ class Header extends React.Component {
       <div>
         <PageHeader
           className = "home_header"
-          title="简易数据库系统"
+          title="图书管理系统"
           subTitle = "A Simple DBMS built by React & NodeJS"
         />
         <Router>
           <Menu onClick={this.handleClick}  mode="horizontal">
-            <Menu.Item key = "book" icon={<MailOutlined />}>Book List</Menu.Item>
-            <Menu.Item key = "record" icon={<MailOutlined />}>Send Record List</Menu.Item>
+            <Menu.Item key = "book" icon={<HomeOutlined />}>Book List</Menu.Item>
+            <Menu.Item key = "record" icon={<BarsOutlined />}>Record List</Menu.Item>
+            <Menu.Item key = "del_token" icon={<DeleteRowOutlined />}>
+              <Button type="link" size='large' onClick={ ()=> localStorage.removeItem('token') }>
+                Delete token
+              </Button>
+            </Menu.Item>
           </Menu>
         </Router>
       </div>

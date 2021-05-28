@@ -17,7 +17,6 @@ class Auth extends React.Component {
       record_modal:false,
       record_data:[]
     }
-    // console.log(this.props)
     const token = localStorage.getItem('token');
     const url = "http://localhost:7001/sql/findRecord";
     fetch(url,{
@@ -28,7 +27,6 @@ class Auth extends React.Component {
     }).then(res=>{
       return res.json();
     }).then(res=>{
-      console.log(res)
       this.setState({db_data:res.res.map(i=>{return {...i, key:i.FID}})})
     }).catch(err=>{
       message.error("发生错误！可能是宁没有权限")
@@ -99,15 +97,14 @@ class Auth extends React.Component {
       ),
   });
   handleAddRecord = () => {
-    console.log(this.state.record_status)
     this.setState({record_modal:true})
   }
   handleRecordOK = () => {
+    const token = localStorage.getItem('token');
     this.setState({
       record_data:this.formRef.current.getFieldValue(),
       record_modal:false
     },()=>{
-      console.log(this.state.record_data)
       if(this.state.record_status === "borrow"){
         const url_bor = "http://localhost:7001/sql/borrowBook";
         fetch(url_bor,{
@@ -116,12 +113,11 @@ class Auth extends React.Component {
           mode:'cors',
           headers: new Headers({
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${this.token}`,
+            'Authorization': `Bearer ${token}`,
           })
         }).then(res=>{
           return res.json();
         }).then(res=>{
-          console.log(res)
           if(res.status === 200){
             message.success("Borrow item success!")
           } else if(res.status === 300) {
@@ -135,7 +131,7 @@ class Auth extends React.Component {
           fetch(url,{
             method:"POST",
             headers: new Headers({
-              'Authorization': `Bearer ${this.token}`,
+              'Authorization': `Bearer ${token}`,
             })
           }).then(res=>{
             return res.json();
@@ -154,12 +150,11 @@ class Auth extends React.Component {
           mode:'cors',
           headers: new Headers({
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${this.token}`,
+            'Authorization': `Bearer ${token}`,
           })
         }).then(res=>{
           return res.json();
         }).then(res=>{
-          console.log(res)
           if(res.status === 200){
             message.success("Return item success!")
           } else if(res.status === 300) {
@@ -174,7 +169,7 @@ class Auth extends React.Component {
             method:"POST",
             headers: new Headers({
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${this.token}`,
+              'Authorization': `Bearer ${token}`,
             })
           }).then(res=>{
             return res.json();
@@ -194,7 +189,7 @@ class Auth extends React.Component {
   }
   formRef = React.createRef();
   render() {
-    
+
     const db_structure = [
       {
         title:'记录ID FID',
@@ -261,7 +256,7 @@ class Auth extends React.Component {
             </Content>
             <Footer>
               <div className="btn">
-                <Button 
+                <Button
                   type="primary"
                   style={{ margin : '3%'}}
                   onClick={() => {
@@ -272,7 +267,7 @@ class Auth extends React.Component {
                 >
                   借书 Borrow
                 </Button>
-                <Button 
+                <Button
                   type="primary"
                   style={{ margin : '3%'}}
                   onClick={() => {
