@@ -22,10 +22,14 @@ class Header extends React.Component {
       else if(token === null){
         message.error("没有权限~")
       }else{
-        if(item.key === "book")
+        if(item.key === "book"){
+          console.log(this.props)
           this.props.props.history.push('/')
+        }
         else if(item.key === "record")
           this.props.props.history.push('/auth')
+        else if (item.key === "register")
+          this.props.props.history.push('/register')
       }
     })
   }
@@ -41,6 +45,7 @@ class Header extends React.Component {
           <Menu onClick={this.handleClick}  mode="horizontal">
             <Menu.Item key = "book" icon={<HomeOutlined />}>Book List</Menu.Item>
             <Menu.Item key = "record" icon={<BarsOutlined />}>Record List</Menu.Item>
+            <Menu.Item key = "register" icon={<BarsOutlined />}>Register Card</Menu.Item>
             <Menu.Item key = "del_token" icon={<DeleteRowOutlined />}>
               <Button type="link" size='large' onClick={ ()=> localStorage.removeItem('token') }>
                 Delete token

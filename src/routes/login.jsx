@@ -74,7 +74,7 @@ class Login extends React.Component {
               key = "Password"
               rule = {[{required: true, message: "Please input student's name"}]}
             >
-              <Input />
+              <Input.Password />
             </Form.Item>
           </Form>
         </Modal>
